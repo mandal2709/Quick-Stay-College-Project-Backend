@@ -29,7 +29,7 @@ app.use("/api/availability", require("./route/availability"));
 
 const startServer = async () => {
   await connectDB();
-  await startScheduler();
+  // await startScheduler();
 
   app.listen(5000, () => console.log("Server running on port 5000"));
 };
