@@ -31,16 +31,7 @@ app.use(
 
       return callback(new Error("CORS not allowed"));
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
-
-      return callback(null, true); // 🔥 TEMP: allow all (for debugging)
-      // return callback(new Error("CORS not allowed"));
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ add OPTIONS
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
