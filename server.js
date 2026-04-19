@@ -13,9 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin:
-      "http://localhost:5173" ||
-      "https://quick-stay-college-project.onrender.com",
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
