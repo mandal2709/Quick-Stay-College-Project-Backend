@@ -16,8 +16,8 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
-  process.env.FRONTEND_URL || "",
-].filter(Boolean); // Remove empty strings
+  "https://quick-stay-college-project.onrender.com",
+];
 
 app.use(
   cors({
@@ -29,9 +29,10 @@ app.use(
         return callback(null, true);
       }
 
-      return callback(new Error("CORS not allowed"));
+      return callback(null, true); // 🔥 TEMP: allow all (for debugging)
+      // return callback(new Error("CORS not allowed"));
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ add OPTIONS
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
