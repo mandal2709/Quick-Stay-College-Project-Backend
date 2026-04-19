@@ -19,6 +19,11 @@ app.use(
   }),
 );
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({ message: "Quick Stay Hotel Booking API", status: "running" });
+});
+
 app.use("/api/auth", require("./route/auth"));
 app.use("/api/rooms", require("./route/rooms"));
 app.use("/api/bookings", require("./route/booking"));
