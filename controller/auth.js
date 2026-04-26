@@ -94,6 +94,9 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "Email already in use" });
     }
 
+    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/.test(password)) {
+      throw new Error("Password is not strong enough");
+    }
     const user = await User.create({
       fullName,
       email,

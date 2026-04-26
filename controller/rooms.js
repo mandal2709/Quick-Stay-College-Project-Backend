@@ -75,6 +75,22 @@ const addReview = async (req, res) => {
   }
 };
 
+const get5StarReviews = async (req, res) => {
+  try {
+    const rooms = await Room.find();
+    const fiveStarReviews = [];
+    rooms.forEach((room) => {
+      const filteredReviews = (room.reviews || []).filter(
+        (review) => review.rating === 5,
+      );
+      fiveStarReviews.push(...filteredReviews);
+    });
+    res.json({ reviews: fiveStarReviews });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 const createRoom = async (req, res) => {
   try {
     // Check if user is logged in
@@ -347,4 +363,5 @@ module.exports = {
   createRoom,
   getRoomsByOwner,
   updateRoom,
+  get5StarReviews,
 };
