@@ -1,0 +1,15 @@
+#MONGO_URI=mongodb://127.0.0.1:27017/hotel-booking
+MONGO_URI=mongodb+srv://flurt2709_db_user:tMR6z6GYY2lT5VVv@cluster1.r4sm5hp.mongodb.net/?appName=Cluster1
+
+JWT_SECRET=your_access_token_secret_key
+JWT_REFRESH_SECRET=your_refresh_token_secret_key
+
+CLOUDINARY_CLOUD_NAME=dimpt27o5
+CLOUDINARY_API_KEY=929523614454477
+CLOUDINARY_API_SECRET=-Su64udDAh1QhffgdT_Wk_mJFDU
+
+# Environment
+NODE_ENV=production
+
+# Frontend URL for production
+FRONTEND_URL=https://quick-stay-college-project.onrender.com

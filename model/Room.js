@@ -58,6 +58,10 @@ const roomSchema = new mongoose.Schema({
     airConditioning: { type: Boolean, default: false },
     parking: { type: Boolean, default: false },
   },
+  discount: {
+    type: Number,
+    default: 0,
+  },
   reviews: [
     {
       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

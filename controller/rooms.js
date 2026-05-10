@@ -356,6 +356,111 @@ const updateRoom = async (req, res) => {
   }
 };
 
+const featuredRooms = async (req, res) => {
+  try {
+    const rooms = await Room.find();
+    const response = rooms.map((room) => ({
+      _id: room._id,
+      title: room.title,
+      location: room.location,
+      price: room.price,
+      images: room.images[0] || null,
+    }));
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching featured rooms:", error);
+    res.status(500).json({
+      message: "Server error while fetching featured rooms",
+      error: error.message,
+    });
+  }
+};
+
+const discount = async (req, res) => {
+  try {
+    const userId = req.user.id; // From auth middleware
+    const { id: roomId } = req.params;
+    const { discountPrice } = req.body;
+
+    if (!roomId) {
+      return res
+        .status(400)
+        .json({ message: "Room ID is required OR room not found" });
+    }
+
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return res
+        .status(404)
+        .json({ message: "Room not found, Invalid Room ID" });
+    }
+
+    if (room.owner.toString() !== userId) {
+      return res.status(403).json({
+        message: "You are not authorized to apply discount on this room",
+      });
+    }
+
+    // Apply discount logic here
+    room.discount = discountPrice;
+    await room.save();
+
+    res.status(200).json({
+      message: "Discount applied successfully",
+      room,
+    });
+  } catch (error) {
+    console.error("Error applying discount:", error);
+    res.status(500).json({
+      message: "Server error while applying discount",
+      error: error.message,
+    });
+  }
+};
+
+const removeDiscount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { id: roomId } = req.params;
+
+    if (!roomId) {
+      return res
+        .status(400)
+        .json({ message: "Room ID is required OR room not found" });
+    }
+
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return res
+        .status(404)
+        .json({ message: "Room not found, Invalid Room ID" });
+    }
+
+    if (room.owner.toString() !== userId) {
+      return res.status(403).json({
+        message: "You are not authorized to remove discount on this room",
+      });
+    }
+
+    // Remove discount
+    room.discount = 0;
+    await room.save();
+
+    res.status(200).json({
+      message: "Discount removed successfully",
+      room,
+    });
+  } catch (error) {
+    console.error("Error removing discount:", error);
+    res.status(500).json({
+      message: "Server error while removing discount",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllRooms,
   getRoomById,
@@ -364,4 +469,7 @@ module.exports = {
   getRoomsByOwner,
   updateRoom,
   get5StarReviews,
+  featuredRooms,
+  discount,
+  removeDiscount,
 };
