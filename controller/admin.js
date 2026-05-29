@@ -12,7 +12,7 @@ const getStats = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(6)
       .populate("user", "fullName email")
-      .populate("room", "roomType pricePerNight")
+      .populate("room", "title price categoryPrices")
       .lean();
 
     res

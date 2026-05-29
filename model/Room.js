@@ -34,14 +34,14 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  roomType: {
-    type: String,
-    enum: ["single", "double", "suite", "luxury"],
-    default: "single",
-  },
   price: {
     type: Number,
-    required: true,
+    default: 0,
+  },
+  categoryPrices: {
+    simple: { type: Number, default: 0 },
+    luxury: { type: Number, default: 0 },
+    premium: { type: Number, default: 0 },
   },
   images: {
     type: [String],

@@ -105,16 +105,30 @@ const createRoom = async (req, res) => {
     // Destructure form data
     const {
       title,
-      roomType,
       location,
       mobileNo,
       pricePerNight,
+      simplePrice,
+      luxuryPrice,
+      premiumPrice,
       description,
       amenities,
     } = req.body;
 
+    const parsedSimplePrice = Number(simplePrice ?? pricePerNight);
+    const parsedLuxuryPrice = Number(luxuryPrice);
+    const parsedPremiumPrice = Number(premiumPrice);
+
     // Validate required fields
-    if (!title || !location || !mobileNo || !pricePerNight || !description) {
+    if (
+      !title ||
+      !location ||
+      !mobileNo ||
+      !description ||
+      !parsedSimplePrice ||
+      !parsedLuxuryPrice ||
+      !parsedPremiumPrice
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -175,10 +189,14 @@ const createRoom = async (req, res) => {
       owner: userId,
       title,
       approvalStatus: "pending",
-      roomType: roomType || "single",
       location,
       contact: mobileNo,
-      price: parseFloat(pricePerNight),
+      price: parsedSimplePrice,
+      categoryPrices: {
+        simple: parsedSimplePrice,
+        luxury: parsedLuxuryPrice,
+        premium: parsedPremiumPrice,
+      },
       images: imageUrls,
       description,
       amenities: {
@@ -254,16 +272,30 @@ const updateRoom = async (req, res) => {
     // Destructure form data
     const {
       title,
-      roomType,
       location,
       mobileNo,
       pricePerNight,
+      simplePrice,
+      luxuryPrice,
+      premiumPrice,
       description,
       amenities,
     } = req.body;
 
+    const parsedSimplePrice = Number(simplePrice ?? pricePerNight);
+    const parsedLuxuryPrice = Number(luxuryPrice);
+    const parsedPremiumPrice = Number(premiumPrice);
+
     // Validate required fields
-    if (!title || !location || !mobileNo || !pricePerNight || !description) {
+    if (
+      !title ||
+      !location ||
+      !mobileNo ||
+      !description ||
+      !parsedSimplePrice ||
+      !parsedLuxuryPrice ||
+      !parsedPremiumPrice
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -327,10 +359,14 @@ const updateRoom = async (req, res) => {
 
     // Update room
     room.title = title;
-    room.roomType = roomType || room.roomType;
     room.location = location;
     room.contact = mobileNo;
-    room.price = parseFloat(pricePerNight);
+    room.price = parsedSimplePrice;
+    room.categoryPrices = {
+      simple: parsedSimplePrice,
+      luxury: parsedLuxuryPrice,
+      premium: parsedPremiumPrice,
+    };
     room.description = description;
     room.images = imageUrls;
     room.amenities = {

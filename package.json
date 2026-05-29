@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "migrate:category-prices": "node migrations/addCategoryPricesToRooms.js"
   },
   "keywords": [],
   "author": "",

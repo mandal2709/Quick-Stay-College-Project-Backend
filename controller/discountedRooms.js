@@ -5,7 +5,9 @@ const getDiscountedRooms = async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
 
     const query = Room.find({ discount: { $gt: 0 } })
-      .select("_id title location price images discount roomType description")
+      .select(
+        "_id title location price images discount description categoryPrices",
+      )
       .sort({ discount: -1 });
 
     if (limit && limit > 0) {
