@@ -5,7 +5,15 @@ const User = require("../model/User");
 const createBooking = async (req, res) => {
   try {
     const user = req.user.id; // From auth middleware
-    const { room, checkIn, checkOut, guests, totalPrice } = req.body;
+    const {
+      room,
+      checkIn,
+      checkOut,
+      guests,
+      totalPrice,
+      roomCategory,
+      pricePerNight,
+    } = req.body;
     if (!user) {
       return res
         .status(401)
@@ -25,6 +33,8 @@ const createBooking = async (req, res) => {
       isActive: true,
       user,
       totalPrice,
+      roomCategory: roomCategory || "simple",
+      pricePerNight: pricePerNight || 0,
     });
     const savedBooking = await booking.save();
 
@@ -69,8 +79,11 @@ const getBookingByOwner = async (req, res) => {
       .populate("room")
       .populate("user")
       .sort({ createdAt: -1 });
-    
-    const totalRevenue = bookings.reduce((sum, booking) => sum + booking.totalPrice, 0);
+
+    const totalRevenue = bookings.reduce(
+      (sum, booking) => sum + booking.totalPrice,
+      0,
+    );
     const totalBookings = bookings.length;
     res.status(200).json({ bookings, totalRevenue, totalBookings });
   } catch (error) {

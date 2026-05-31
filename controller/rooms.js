@@ -361,7 +361,6 @@ const updateRoom = async (req, res) => {
     room.title = title;
     room.location = location;
     room.contact = mobileNo;
-    room.price = parsedSimplePrice;
     room.categoryPrices = {
       simple: parsedSimplePrice,
       luxury: parsedLuxuryPrice,
@@ -399,7 +398,7 @@ const featuredRooms = async (req, res) => {
       _id: room._id,
       title: room.title,
       location: room.location,
-      price: room.price,
+      price: room.categoryPrices?.simple || 0,
       images: room.images[0] || null,
     }));
     return res.status(200).json(response);

@@ -34,10 +34,6 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  price: {
-    type: Number,
-    default: 0,
-  },
   categoryPrices: {
     simple: { type: Number, default: 0 },
     luxury: { type: Number, default: 0 },

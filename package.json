@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "migrate:category-prices": "node migrations/addCategoryPricesToRooms.js"
+    "migrate:category-prices": "node migrations/addCategoryPricesToRooms.js",
+    "migrate:random-prices": "node migrations/populateRandomCategoryPrices.js"
   },
   "keywords": [],
   "author": "",

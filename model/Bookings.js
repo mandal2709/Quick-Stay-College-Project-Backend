@@ -26,7 +26,16 @@ const bookingSchema = new mongoose.Schema({
   totalPrice: {
     type: Number,
     required: true,
-    },
+  },
+  roomCategory: {
+    type: String,
+    enum: ["simple", "luxury", "premium"],
+    default: "simple",
+  },
+  pricePerNight: {
+    type: Number,
+    required: true,
+  },
   status: {
     type: String,
     enum: ["booked", "cancelled"],
