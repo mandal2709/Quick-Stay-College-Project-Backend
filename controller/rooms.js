@@ -376,6 +376,7 @@ const updateRoom = async (req, res) => {
       parking: parsedAmenities["Pool Access"] || false,
     };
 
+    delete room.discount;
     await room.save();
 
     res.status(200).json({
@@ -415,7 +416,7 @@ const discount = async (req, res) => {
   try {
     const userId = req.user.id; // From auth middleware
     const { id: roomId } = req.params;
-    const { discountPrice } = req.body;
+    const { discountPrice, category, discounts } = req.body;
 
     if (!roomId) {
       return res
@@ -437,8 +438,64 @@ const discount = async (req, res) => {
       });
     }
 
-    // Apply discount logic here
-    room.discount = discountPrice;
+    const normalizedDiscounts = {
+      simple: 0,
+      luxury: 0,
+      premium: 0,
+      ...room.categoryDiscounts?.toObject?.(),
+    };
+
+    const applyDiscountValue = (value) => {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+    };
+
+    if (discounts && typeof discounts === "object") {
+      let updated = false;
+      ["simple", "luxury", "premium"].forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(discounts, key)) {
+          const value = applyDiscountValue(discounts[key]);
+          if (value === null) {
+            return res
+              .status(400)
+              .json({ message: `Invalid discount value for ${key}` });
+          }
+          normalizedDiscounts[key] = value;
+          updated = true;
+        }
+      });
+
+      if (!updated) {
+        return res
+          .status(400)
+          .json({ message: "No valid category discounts provided" });
+      }
+
+      room.categoryDiscounts = normalizedDiscounts;
+    } else if (category) {
+      const parsedPrice = applyDiscountValue(discountPrice);
+      if (parsedPrice === null) {
+        return res.status(400).json({ message: "Invalid discount price" });
+      }
+
+      if (category === "all") {
+        normalizedDiscounts.simple = parsedPrice;
+        normalizedDiscounts.luxury = parsedPrice;
+        normalizedDiscounts.premium = parsedPrice;
+      } else if (["simple", "luxury", "premium"].includes(category)) {
+        normalizedDiscounts[category] = parsedPrice;
+      } else {
+        return res.status(400).json({ message: "Invalid discount category" });
+      }
+
+      room.categoryDiscounts = normalizedDiscounts;
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Category or discounts object is required" });
+    }
+
+    delete room.discount;
     await room.save();
 
     res.status(200).json({
@@ -458,6 +515,7 @@ const removeDiscount = async (req, res) => {
   try {
     const userId = req.user.id;
     const { id: roomId } = req.params;
+    const { category } = req.body || req.query || {};
 
     if (!roomId) {
       return res
@@ -479,8 +537,22 @@ const removeDiscount = async (req, res) => {
       });
     }
 
-    // Remove discount
-    room.discount = 0;
+    if (category) {
+      if (["simple", "luxury", "premium"].includes(category)) {
+        room.categoryDiscounts = {
+          ...room.categoryDiscounts?.toObject?.(),
+          [category]: 0,
+        };
+      } else if (category === "all") {
+        room.categoryDiscounts = { simple: 0, luxury: 0, premium: 0 };
+      } else {
+        return res.status(400).json({ message: "Invalid discount category" });
+      }
+    } else {
+      room.categoryDiscounts = { simple: 0, luxury: 0, premium: 0 };
+    }
+
+    delete room.discount;
     await room.save();
 
     res.status(200).json({

@@ -4,11 +4,21 @@ const getDiscountedRooms = async (req, res) => {
   try {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : null;
 
-    const query = Room.find({ discount: { $gt: 0 } })
+    const query = Room.find({
+      $or: [
+        { "categoryDiscounts.simple": { $gt: 0 } },
+        { "categoryDiscounts.luxury": { $gt: 0 } },
+        { "categoryDiscounts.premium": { $gt: 0 } },
+      ],
+    })
       .select(
-        "_id title location price images discount description categoryPrices",
+        "_id title location price images description categoryPrices categoryDiscounts",
       )
-      .sort({ discount: -1 });
+      .sort({
+        "categoryDiscounts.simple": -1,
+        "categoryDiscounts.luxury": -1,
+        "categoryDiscounts.premium": -1,
+      });
 
     if (limit && limit > 0) {
       query.limit(limit);

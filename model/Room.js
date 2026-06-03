@@ -39,6 +39,11 @@ const roomSchema = new mongoose.Schema({
     luxury: { type: Number, default: 0 },
     premium: { type: Number, default: 0 },
   },
+  categoryDiscounts: {
+    simple: { type: Number, default: 0 },
+    luxury: { type: Number, default: 0 },
+    premium: { type: Number, default: 0 },
+  },
   images: {
     type: [String],
     required: true,
@@ -53,10 +58,6 @@ const roomSchema = new mongoose.Schema({
     roomService: { type: Boolean, default: false },
     airConditioning: { type: Boolean, default: false },
     parking: { type: Boolean, default: false },
-  },
-  discount: {
-    type: Number,
-    default: 0,
   },
   reviews: [
     {
