@@ -39,6 +39,11 @@ const roomSchema = new mongoose.Schema({
     luxury: { type: Number, default: 0 },
     premium: { type: Number, default: 0 },
   },
+  categoryGuestLimits: {
+    simple: { type: Number, default: 1 },
+    luxury: { type: Number, default: 1 },
+    premium: { type: Number, default: 1 },
+  },
   categoryDiscounts: {
     simple: { type: Number, default: 0 },
     luxury: { type: Number, default: 0 },

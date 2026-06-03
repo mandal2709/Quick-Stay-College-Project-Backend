@@ -111,6 +111,9 @@ const createRoom = async (req, res) => {
       simplePrice,
       luxuryPrice,
       premiumPrice,
+      simpleGuestLimit,
+      luxuryGuestLimit,
+      premiumGuestLimit,
       description,
       amenities,
     } = req.body;
@@ -118,6 +121,9 @@ const createRoom = async (req, res) => {
     const parsedSimplePrice = Number(simplePrice ?? pricePerNight);
     const parsedLuxuryPrice = Number(luxuryPrice);
     const parsedPremiumPrice = Number(premiumPrice);
+    const parsedSimpleGuestLimit = Number(simpleGuestLimit);
+    const parsedLuxuryGuestLimit = Number(luxuryGuestLimit);
+    const parsedPremiumGuestLimit = Number(premiumGuestLimit);
 
     // Validate required fields
     if (
@@ -127,9 +133,15 @@ const createRoom = async (req, res) => {
       !description ||
       !parsedSimplePrice ||
       !parsedLuxuryPrice ||
-      !parsedPremiumPrice
+      !parsedPremiumPrice ||
+      Number.isNaN(parsedSimpleGuestLimit) ||
+      parsedSimpleGuestLimit <= 0 ||
+      Number.isNaN(parsedLuxuryGuestLimit) ||
+      parsedLuxuryGuestLimit <= 0 ||
+      Number.isNaN(parsedPremiumGuestLimit) ||
+      parsedPremiumGuestLimit <= 0
     ) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({ message: "Missing or invalid required fields" });
     }
 
     // Check if user exists
@@ -196,6 +208,11 @@ const createRoom = async (req, res) => {
         simple: parsedSimplePrice,
         luxury: parsedLuxuryPrice,
         premium: parsedPremiumPrice,
+      },
+      categoryGuestLimits: {
+        simple: parsedSimpleGuestLimit,
+        luxury: parsedLuxuryGuestLimit,
+        premium: parsedPremiumGuestLimit,
       },
       images: imageUrls,
       description,
@@ -278,6 +295,9 @@ const updateRoom = async (req, res) => {
       simplePrice,
       luxuryPrice,
       premiumPrice,
+      simpleGuestLimit,
+      luxuryGuestLimit,
+      premiumGuestLimit,
       description,
       amenities,
     } = req.body;
@@ -285,6 +305,9 @@ const updateRoom = async (req, res) => {
     const parsedSimplePrice = Number(simplePrice ?? pricePerNight);
     const parsedLuxuryPrice = Number(luxuryPrice);
     const parsedPremiumPrice = Number(premiumPrice);
+    const parsedSimpleGuestLimit = Number(simpleGuestLimit);
+    const parsedLuxuryGuestLimit = Number(luxuryGuestLimit);
+    const parsedPremiumGuestLimit = Number(premiumGuestLimit);
 
     // Validate required fields
     if (
@@ -294,9 +317,15 @@ const updateRoom = async (req, res) => {
       !description ||
       !parsedSimplePrice ||
       !parsedLuxuryPrice ||
-      !parsedPremiumPrice
+      !parsedPremiumPrice ||
+      Number.isNaN(parsedSimpleGuestLimit) ||
+      parsedSimpleGuestLimit <= 0 ||
+      Number.isNaN(parsedLuxuryGuestLimit) ||
+      parsedLuxuryGuestLimit <= 0 ||
+      Number.isNaN(parsedPremiumGuestLimit) ||
+      parsedPremiumGuestLimit <= 0
     ) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({ message: "Missing or invalid required fields" });
     }
 
     // Parse amenities if it's a string
@@ -365,6 +394,11 @@ const updateRoom = async (req, res) => {
       simple: parsedSimplePrice,
       luxury: parsedLuxuryPrice,
       premium: parsedPremiumPrice,
+    };
+    room.categoryGuestLimits = {
+      simple: parsedSimpleGuestLimit,
+      luxury: parsedLuxuryGuestLimit,
+      premium: parsedPremiumGuestLimit,
     };
     room.description = description;
     room.images = imageUrls;
